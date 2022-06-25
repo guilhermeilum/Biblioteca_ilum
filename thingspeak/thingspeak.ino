@@ -1,5 +1,5 @@
 /**
-  Progeto biblioteca
+  Projeto biblioteca.
   Nome: Sensor de umidade e temperatura para a biblioteca. 
   Objetivo:  Medir a temperatura e umidade da biblioteca para analizar os dados obtidos.
 
@@ -17,7 +17,7 @@
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
 */
-// Define todas as bibliotecas e variaveis usadas.
+// Definição de todas as bibliotecas e variáveis usadas.
 #include <DHT.h>
 int LED = 2;
 float leitura_umidade;
@@ -32,8 +32,8 @@ DHT sensor_dht(pino_dados, DHTTYPE);
 #include <WiFi.h>
 #include "ThingSpeak.h"
 
-const char* ssid = "Ilum";   // your network SSID (name) 
-const char* password = "SENHA";   // your network password
+const char* ssid = "Ilum";   // Nome do WiFi
+const char* password = "SENHA";   // Senha do WiFi
 
 #define pino_led_vermelho2 5
 #define pino_led_vermelho 18
@@ -45,7 +45,7 @@ WiFiClient  client;
 unsigned long myChannelNumber = 1; // Numero do canal do thingspeak
 const char * myWriteAPIKey = "APIKEY"; //Chave privada do site
 
-// Timer variables
+// Variaveis de tempo
 unsigned long lastTime = 0;
 unsigned long timerDelay = 300000; // Tempo de espera para enviar os dados
 
@@ -59,7 +59,7 @@ void setup() {
   ThingSpeak.begin(client);  // Inicializa o Thingspeak
   sensor_dht.begin();
   
-  // Todas as variaveis criadas são definidas
+  // Todas as variáveis criadas são definidas
   pinMode(LED, OUTPUT);
   pinMode(pino_led_vermelho2, OUTPUT);
   pinMode(pino_led_vermelho, OUTPUT);
@@ -84,7 +84,7 @@ void loop() {
   calibrado_umidade = (3.6398067467864834 + (0.6332527238104956*leitura_umidade)); 
   calibrado_temperatura = (9.355976022706546 +(0.6627333544331856*leitura_temperatura));
 
-  // Conectar no wifi
+  // Conectar no WiFi
     if(WiFi.status() != WL_CONNECTED){
       Serial.print("Attempting to connect");
       while(WiFi.status() != WL_CONNECTED){ // loop que só quebra quando a esp32 conecta na internet 
@@ -105,7 +105,7 @@ void loop() {
     Serial.print(calibrado_temperatura);
     Serial.println();
   
-    // Se o WiFi desconectar irá tentar conectar novamente até conseguir.
+    // Se o WiFi desconectar irá tentar conectar novamente até conseguir, como um loop.
     if(WiFi.status() != WL_CONNECTED){
       Serial.print("Attempting to connect");
       while(WiFi.status() != WL_CONNECTED){
@@ -115,14 +115,14 @@ void loop() {
       Serial.println("\nConnected.");
       digitalWrite(LED, HIGH);
     }
-    // Define que valores serão enviados para cada Field, que sera o local q o dado é gravado no site
+    // Define que valores serão enviados para cada Field, que será o local que o dado é gravado no site
     ThingSpeak.setField(1, calibrado_temperatura); 
     ThingSpeak.setField(2, calibrado_umidade);
     
     // Aqui escreveos os dados no site, do Field 1 e 2.
     int x = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
 
-    if(x == 200){ // Se o valor de x for igual a 200 tudo ocorreu certo, se não ira printar o código HTTP de erro. 
+    if(x == 200){ // Se o valor de x for igual a 200, tudo ocorreu certo, se não, irá printar o código HTTP de erro. 
       Serial.println("Channel update successful.");
       digitalWrite(LED, HIGH);
     }
@@ -133,8 +133,7 @@ void loop() {
     lastTime = millis();
   }
 
-  // Serie de if para conseguir acender os leds com a umidade definida.
-  // Respectivamente da maior umidade para a menor.
+  // Série de if para conseguir acender os leds com a umidade definida, da maior umidade para a menor.
   // Os dados serão conferidos de 1 em 1 segundo.
     if(calibrado_umidade > 70 && calibrado_umidade <99) // Liga os dois leds vermelhos
   {
