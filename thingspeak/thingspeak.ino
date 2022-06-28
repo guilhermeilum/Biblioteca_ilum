@@ -51,7 +51,6 @@ unsigned long timerDelay = 300000; // Tempo de espera para enviar os dados
 
 void setup() {
   delay(50);
-  digitalWrite(LED, LOW);
   Serial.begin(115200);
   
   WiFi.mode(WIFI_STA);   // Modo de comunicação esp32-WIFI
@@ -66,6 +65,7 @@ void setup() {
   pinMode(pino_led_amarelo, OUTPUT);
   pinMode(pino_led_verde, OUTPUT);
   pinMode(pino_led_azul, OUTPUT);
+  digitalWrite(LED, LOW);
 }
 void apagaleds() // Função que apaga todos os leds
 {
@@ -84,18 +84,6 @@ void loop() {
   calibrado_umidade = (3.6398067467864834 + (0.6332527238104956*leitura_umidade)); 
   calibrado_temperatura = (9.355976022706546 +(0.6627333544331856*leitura_temperatura));
 
-  // Conectar no WiFi
-    if(WiFi.status() != WL_CONNECTED){
-      Serial.print("Attempting to connect");
-      while(WiFi.status() != WL_CONNECTED){ // loop que só quebra quando a esp32 conecta na internet 
-        WiFi.begin(ssid, password); 
-        delay(5000);     
-      } 
-      Serial.println("\nConnected.");
-      digitalWrite(LED, HIGH);
-    }
-
-    
   if ((millis() - lastTime) > timerDelay) { // If para enviar os dados em cada 5 minutos.
     Serial.print("Umidade (em porcentagem): ");
     Serial.print(calibrado_umidade);
